@@ -7,22 +7,7 @@ const {
 	updateContact,
 } = require("../../models/contacts");
 
-const Joi = require("joi");
-
-const schema = Joi.object({
-	name: Joi.string().min(3).max(40).required(),
-	email: Joi.string()
-		.email({
-			minDomainSegments: 2,
-			tlds: { allow: ["com", "net", "ua"] },
-		})
-		.required(),
-	phone: Joi.string()
-		.pattern(/(?=.*\+[0-9]{3}\s?[0-9]{2}\s?[0-9]{3}\s?[0-9]{4,5}$)/)
-		.min(12)
-		.max(13)
-		.required(),
-});
+const { postSchema, updateSchema } = require("../../helpers/ValidateSchemas");
 
 const RequestError = require("../../helpers/RequestError");
 const { nanoid } = require("nanoid");
@@ -53,7 +38,7 @@ router.get("/:contactId", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
 	try {
-		const { error, value: body } = schema.validate(req.body);
+		const { error, value: body } = postSchema.validate(req.body);
 		if (error) {
 			const [details] = error.details;
 			return res.status(400).json({ message: details.message });
@@ -82,7 +67,7 @@ router.delete("/:contactId", async (req, res, next) => {
 
 router.put("/:contactId", async (req, res, next) => {
 	try {
-		const { error } = schema.validate(req.body);
+		const { error } = updateSchema.validate(req.body);
 		if (error) {
 			throw RequestError(400, "missing fields");
 		}
