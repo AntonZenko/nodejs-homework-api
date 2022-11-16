@@ -7,7 +7,6 @@ const { User } = require("../../models/user");
 const avatarsDir = path.join(__dirname, "../../", "public", "avatars");
 
 const updateAvatar = async (req, res, next) => {
-	const user = await User.findById(req.user._id);
 	const { _id } = req.user;
 	const { path: tempName, originalname } = req.file;
 	const extension = originalname.split(".").pop();
