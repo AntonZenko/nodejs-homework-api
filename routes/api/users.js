@@ -2,7 +2,7 @@ const express = require("express");
 
 const ctrl = require("../../controllers/auth");
 
-const ctrlWrapper = require("../../helpers/ctrlWrapper");
+const { ctrlWrapper } = require("../../helpers");
 
 const { validateBody, authenticate, upload } = require("../../middlewares");
 
@@ -14,6 +14,14 @@ router.post(
 	"/signup",
 	validateBody(schemas.signUpSchema),
 	ctrlWrapper(ctrl.signUp)
+);
+
+router.get("/verify/:verificationToken", ctrlWrapper(ctrl.verify));
+
+router.post(
+	"/verify",
+	validateBody(schemas.verifyEmailSchema),
+	ctrlWrapper(ctrl.resendVerificationEmail)
 );
 
 router.post(
